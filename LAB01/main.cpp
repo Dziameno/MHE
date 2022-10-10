@@ -5,19 +5,25 @@
 
 int main(int argc, char **argv) {
     using namespace std;
-    std::ifstream file("E:\\CODE\\SEM V\\MHE\\LAB01\\data\\input.json");
-    nlohmann::json data = nlohmann::json::parse(file);
+
+    string file = argv[1];
+    std::ifstream f(file);
+    nlohmann::json data = nlohmann::json::parse(f);
 
     string txt = data["text"];
     int height = data["h"];
     int width = data["w"];
-    
+    int horizontal_center = (width-1)/2;
+    int vertical_center = (height-1)/2;
+    int iteration = 0;
+
+
     for (int i = 0; i < height; i++) {
         cout << "#";
-        for (int length = 1; length < width - 1; length++) {
-            if (i == 1 && length <= txt.size()) {
-                cout << txt;
-                break;
+        for (int txt_length = 1; txt_length < width - 1; txt_length++) {
+            if (i == vertical_center  && txt_length >= horizontal_center - (txt_length/2) && txt.size() >= iteration) {
+                cout << txt[iteration];
+                iteration++;
             }
             else if (i > 0 && i < height - 1) {
                 cout << " ";
