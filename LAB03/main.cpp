@@ -1,10 +1,16 @@
 #include <iostream>
 #include <vector>
-#include <numeric>
+
+using box_t = std::vector<int>;
 
 struct bin_t {
-    int capacity;
-    std::vector<int> weight;
+    int capacity = 0;
+    box_t weight;
+};
+
+struct result_bin_t {
+    int lose = 0;
+    bin_t bin;
 };
 
 std::ostream &operator<<(std::ostream &o, const bin_t &bin) {
@@ -16,56 +22,86 @@ std::ostream &operator<<(std::ostream &o, const bin_t &bin) {
     return o;
 }
 
-std::vector<int> count_through_weights(const bin_t &bin) {
-    std::vector<int> single_bin;
-    int max_size = 0;
+//box_t count_through_weights(const bin_t &bin) {
+//    std::vector<int> result_bin;
+//    int max_size = 0;
+//    int lose = 0;
+//    int bins_required = 1;
+//    for (int count: bin.weight) {
+//        max_size += count;
+//        if (max_size <= bin.capacity) {
+//            result_bin.push_back(count);
+//            std::cout << ' ';
+//        }
+//        else{
+//            result_bin.push_back(count);
+//            std::cout << " | ";
+//            max_size = count;
+//            bins_required += 1;
+//        }
+//        std::cout << count;
+//    }
+//
+//    std:: cout << std::endl << "r:" << bins_required << std::endl;
+//    std:: cout <<"lose: " << lose;
+//    return result_bin;
+//}
+
+result_bin_t count_through_weights(const bin_t &bin)
+{
+    box_t weight;
     int lose = 0;
-    int bins_required = 0;
-    std::cout << '|';
-    for (int count: bin.weight) {
+    int max_size = 0;
+
+    for (int count : bin.weight)
+    {
         max_size += count;
-        if (max_size <= bin.capacity) {
-            single_bin.push_back(count);
-            std::cout << count;
-//            for(std::vector<int>::iterator it = vector.begin(); it != vector.end(); ++it)
-//                sum_of_elems += *it;
-//            lose = bin.capacity -single_bin.size();
-//            std::cout << lose;
+        if (max_size > bin.capacity)
+        {
+            int before_add = max_size - count;
+            lose = lose + (bin.capacity - before_add);
+            weight.push_back(before_add);
+            std::cout << "|";
+            max_size = count;
         }
-        else{
-            std::cout << '|';
-            single_bin.push_back(count);
-            std::cout << count << "|";
-            max_size = 0;
-            bins_required += 2;
-        }
+        std::cout << "" << count;
     }
-    std::cout << '|' << std::endl;
-    std:: cout <<"bins required: " << bins_required;
-    return single_bin;
+
+    bin_t temp_bin = {
+            .capacity = bin.capacity,
+            .weight = weight};
+
+    result_bin_t result_bin = {
+            .lose = lose,
+            .bin = temp_bin};
+
+    return result_bin;
 }
 
-std::vector<int> signle_bin(){
-
+box_t permutation_of_weight(bin_t &bin){
+    result_bin_t result;
+    while(std::next_permutation(bin.weight.begin(), bin.weight.end())) {
+        result_bin_t output = count_through_weights(bin);
+        if (output.lose < result.lose || result.lose == 0) {
+            result = output;
+        }
+        std::cout << "\nlose:" << output.lose;
+        std::cout << " bins:" << output.bin.weight.size() + 1 << "\n\n";
+    }
+    std::cout << "Best solution:";
+    std::cout << "\nlose:" << result.lose;
+    std::cout << " bins:" << result.bin.weight.size() + 1<< std::endl;
+        return result.bin.weight;
 }
 
 
 int main() {
-    using namespace std;
-    std::vector<int> result_bins;
     bin_t example = {
             10,
-            {2, 7,7,5,3,8,2},
+            {2, 7,7,5,2,4},
     };
 
-
-    cout << example << endl;
-    count_through_weights(example);
-//    cout << '|';
-//    for (auto bin: count_through_weights(example)) {
-//        cout << bin;
-//    }
-//    cout << '|';
+    permutation_of_weight(example);
 
     return 0;
 }
