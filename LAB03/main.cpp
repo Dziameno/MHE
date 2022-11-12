@@ -75,8 +75,16 @@ box_t permutation_of_weight(bin_t &bin) {
     }
 
     std::cout << " Best solution: ";
+    int max_size = 0;
     for (auto best: result.bin.weight) {
-        std::cout << " " << best;
+        max_size += best;
+        if (max_size <= bin.capacity) {
+            std::cout << " ";
+        } else {
+            std::cout << " | ";
+            max_size = best;
+        }
+        std::cout << best;
     }
     std::cout << "\n lose:" << result.lose;
     std::cout << " bins:" << result.min_bins << std::endl;
@@ -86,7 +94,7 @@ box_t permutation_of_weight(bin_t &bin) {
 int main() {
     bin_t example = {
             10,
-            {5,2,9,7,1,3},
+            {5,2,9,7,6,8,3,2},
     };
 
     permutation_of_weight(example);
