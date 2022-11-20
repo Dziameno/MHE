@@ -88,7 +88,42 @@ box_t permutation_of_weight(bin_t bin) {
         std::cout << best;
     }
     std::cout << "\n lose:" << result.lose;
-    std::cout << " bins:" << result.min_bins << std::endl;
+    std::cout << " bins:" << result.min_bins;
+    std::cout << " capacity:" << bin.capacity << std::endl;
+
+    return result.bin.weight;
+}
+
+box_t random_sampling(bin_t bin, int iterations) {
+    result_bin_t result;
+    for(int i = 0; i < iterations; i++) {
+        std::next_permutation(bin.weight.begin(), bin.weight.end());
+            result_bin_t output = count_through_weights(bin);
+            if (output.lose < result.lose || result.lose == 0 && output.min_bins < result.min_bins ||
+                result.min_bins == 0) {
+                result = output;
+            }
+            std::cout << "\n lose:" << output.lose;
+            std::cout << " bins:" << output.min_bins << "\n\n";
+    }
+
+    std::cout << " Best solution: ";
+    int max_size = 0;
+    for (auto best: result.bin.weight) {
+        max_size += best;
+        if (max_size <= bin.capacity) {
+            std::cout << " ";
+        } else {
+            std::cout << " | ";
+            max_size = best;
+        }
+        std::cout << best;
+
+    }
+    std::cout << "\n lose:" << result.lose;
+    std::cout << " bins:" << result.min_bins;
+    std::cout << " capacity:" << bin.capacity << std::endl;
+    std::cout << " itr :" << iterations << std::endl;
     return result.bin.weight;
 }
 
@@ -120,16 +155,16 @@ bin_t insert(){
     return insert_bin;
 }
 
-bin_t generate_random_solution(){
+bin_t generate_random_solution(int iterations){
     static std::random_device rd;
     static std::mt19937 mt(rd());
     bin_t rand_sol;
     int random_capacity = rand_sol.capacity;
-    std::uniform_int_distribution<int> cap(1,20);
+    std::uniform_int_distribution<int> cap(1,100);
     random_capacity = cap(mt);
     std::uniform_int_distribution<int> dist(1,random_capacity);
 
-    for(int i = 0; i < 7; i++){
+    for(int i = 0; i < iterations; i++){
         rand_sol.weight.push_back(dist(mt)) ;
     }
 
@@ -138,7 +173,11 @@ bin_t generate_random_solution(){
             .weight = rand_sol.weight};
 
     return insert_bin;
-
+}
+// hill climb od random
+bin_t hill_climb_det(int iterations){
+    bin_t best_p;
+//    for (int i = 0; i <)
 }
 
 int main() {
@@ -148,9 +187,10 @@ int main() {
 //    };
 //    permutation_of_weight(example);
 
-    int option;
+    int option,iter;
 
-    std::cout << "1 - bruteforce\n"
+    std::cout << "0 - bruteforce random\n"
+                 "1 - bruteforce with user input\n"
                  "2 - random sampling\n"
                  "3 - deterministic hill climbing\n"
                  "4 - hill climbing\n";
@@ -158,11 +198,16 @@ int main() {
     std:: cin >> option;
 
     switch (option){
+        case 0:
+            permutation_of_weight(generate_random_solution(7));
+            break;
         case 1:
             permutation_of_weight(insert());
             break;
         case 2:
-            permutation_of_weight(generate_random_solution());
+            std::cout << "Insert iteration number :";
+            std::cin >> iter;
+            random_sampling(generate_random_solution(7), iter);
             break;
         case 3:
             std::cout << "deterministic" << std::endl;
