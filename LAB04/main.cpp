@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <numeric>
+#include <random>
 
 using box_t = std::vector<int>;
 
@@ -119,6 +120,27 @@ bin_t insert(){
     return insert_bin;
 }
 
+bin_t generate_random_solution(){
+    static std::random_device rd;
+    static std::mt19937 mt(rd());
+    bin_t rand_sol;
+    int random_capacity = rand_sol.capacity;
+    std::uniform_int_distribution<int> cap(1,20);
+    random_capacity = cap(mt);
+    std::uniform_int_distribution<int> dist(1,random_capacity);
+
+    for(int i = 0; i < 7; i++){
+        rand_sol.weight.push_back(dist(mt)) ;
+    }
+
+    bin_t insert_bin = {
+            .capacity = random_capacity,
+            .weight = rand_sol.weight};
+
+    return insert_bin;
+
+}
+
 int main() {
 //        bin_t example = {
 //            10,
@@ -129,7 +151,7 @@ int main() {
     int option;
 
     std::cout << "1 - bruteforce\n"
-                 "2 - slice sampling\n"
+                 "2 - random sampling\n"
                  "3 - deterministic hill climbing\n"
                  "4 - hill climbing\n";
     std::cout << "Wybierz opcje :";
@@ -140,7 +162,7 @@ int main() {
             permutation_of_weight(insert());
             break;
         case 2:
-            std::cout << "slice sampling" << std::endl;
+            permutation_of_weight(generate_random_solution());
             break;
         case 3:
             std::cout << "deterministic" << std::endl;
