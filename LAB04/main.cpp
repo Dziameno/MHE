@@ -25,7 +25,7 @@ std::ostream &operator<<(std::ostream &o, const bin_t &bin) {
     return o;
 }
 
-result_bin_t count_through_weights(const bin_t &bin) {
+result_bin_t bin_and_lose_counter(const bin_t &bin) {
     box_t weight;
     int lose = 0;
     int max_size = 0;
@@ -63,19 +63,22 @@ result_bin_t count_through_weights(const bin_t &bin) {
     return result_bin;
 }
 
-box_t permutation_of_weight(bin_t bin) {
+box_t next_permutation_of_weight(bin_t bin, int iterations) {
     result_bin_t result;
-    while (std::next_permutation(bin.weight.begin(), bin.weight.end())) {
-        result_bin_t output = count_through_weights(bin);
-        if (output.lose < result.lose || result.lose == 0 && output.min_bins < result.min_bins ||
-            result.min_bins == 0) {
-            result = output;
+        for(int i = 0; i < iterations; i++) {
+            std::next_permutation(bin.weight.begin(), bin.weight.end());
+            result_bin_t output = bin_and_lose_counter(bin);
+            if (output.lose < result.lose || result.lose == 0 && output.min_bins < result.min_bins ||
+                result.min_bins == 0) {
+                result = output;
+            }
+            std::cout << std::endl << i << " ";
+            std::cout << output.lose << " ";
+            std::cout << output.min_bins << std::endl;
         }
-        std::cout << "\n lose:" << output.lose;
-        std::cout << " bins:" << output.min_bins << "\n\n";
-    }
 
-    std::cout << " Best solution: ";
+
+    std::cout << "\n\nBruteforce best" << std::endl;
     int max_size = 0;
     for (auto best: result.bin.weight) {
         max_size += best;
@@ -87,27 +90,30 @@ box_t permutation_of_weight(bin_t bin) {
         }
         std::cout << best;
     }
-    std::cout << "\n lose:" << result.lose;
-    std::cout << " bins:" << result.min_bins;
-    std::cout << " capacity:" << bin.capacity << std::endl;
+    std::cout << std::endl << "i:" << iterations << " ";
+    std::cout << "l:" << result.lose << " ";
+    std::cout << "b:" << result.min_bins << "\n\n";
 
     return result.bin.weight;
 }
 
 box_t random_sampling(bin_t bin, int iterations) {
     result_bin_t result;
+    std::random_device rd;
+    std::mt19937 g(rd());
     for(int i = 0; i < iterations; i++) {
-        std::next_permutation(bin.weight.begin(), bin.weight.end());
-            result_bin_t output = count_through_weights(bin);
+        std::shuffle(bin.weight.begin(), bin.weight.end(),g);
+            result_bin_t output = bin_and_lose_counter(bin);
             if (output.lose < result.lose || result.lose == 0 && output.min_bins < result.min_bins ||
                 result.min_bins == 0) {
                 result = output;
             }
-            std::cout << "\n lose:" << output.lose;
-            std::cout << " bins:" << output.min_bins << "\n\n";
+        std::cout << std::endl << i << " ";
+        std::cout << output.lose << " ";
+        std::cout << output.min_bins << std::endl;
     }
 
-    std::cout << " Best solution: ";
+    std::cout << "\n\nRandom sampling best" << std::endl;
     int max_size = 0;
     for (auto best: result.bin.weight) {
         max_size += best;
@@ -120,42 +126,15 @@ box_t random_sampling(bin_t bin, int iterations) {
         std::cout << best;
 
     }
-    std::cout << "\n lose:" << result.lose;
-    std::cout << " bins:" << result.min_bins;
-    std::cout << " capacity:" << bin.capacity << std::endl;
-    std::cout << " itr :" << iterations << std::endl;
+    std::cout << std::endl << "i:" << iterations << " ";
+    std::cout << "l:" << result.lose << " ";
+    std::cout << "b:" << result.min_bins << "\n\n";
+
     return result.bin.weight;
 }
 
-bin_t insert(){
-    int capacity, list_size, weight;
-    box_t weights;
-
-    std::cout << "Insert capacity :";
-    std::cin >> capacity;
-    std::cout << "Insert how many packages you want to pack :";
-    std::cin >> list_size;
-
-
-    for (int i = 0; i < list_size; i++){
-        std::cout << "Insert weight :";
-        std::cin >> weight;
-        if(weight > capacity){
-            std::cout << "Bin to small" << std::endl;
-            list_size += 1;
-        } else {
-            weights.push_back(weight);
-        }
-    }
-
-    bin_t insert_bin = {
-            .capacity = capacity,
-            .weight = weights};
-
-    return insert_bin;
-}
-
 bin_t generate_random_solution(int iterations){
+    result_bin_t result;
     static std::random_device rd;
     static std::mt19937 mt(rd());
     bin_t rand_sol;
@@ -174,49 +153,16 @@ bin_t generate_random_solution(int iterations){
 
     return insert_bin;
 }
-// hill climb od random
-bin_t hill_climb_det(int iterations){
-    bin_t best_p;
-//    for (int i = 0; i <)
-}
+
 
 int main() {
-//        bin_t example = {
-//            10,
-//            {5,2,9,7,6},
-//    };
-//    permutation_of_weight(example);
+        bin_t example = {
+            10,
+            {5,2,9,7,6,2,10,5,4},
+    };
 
-    int option,iter;
-
-    std::cout << "0 - bruteforce random\n"
-                 "1 - bruteforce with user input\n"
-                 "2 - random sampling\n"
-                 "3 - deterministic hill climbing\n"
-                 "4 - hill climbing\n";
-    std::cout << "Wybierz opcje :";
-    std:: cin >> option;
-
-    switch (option){
-        case 0:
-            permutation_of_weight(generate_random_solution(7));
-            break;
-        case 1:
-            permutation_of_weight(insert());
-            break;
-        case 2:
-            std::cout << "Insert iteration number :";
-            std::cin >> iter;
-            random_sampling(generate_random_solution(7), iter);
-            break;
-        case 3:
-            std::cout << "deterministic" << std::endl;
-            break;
-        case 4:
-            std::cout << "hill climbing" << std::endl;
-            break;
-    }
+    next_permutation_of_weight(example, 5);
+    random_sampling(example,10);
 
 
-    return 0;
 }
