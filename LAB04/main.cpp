@@ -65,14 +65,17 @@ result_bin_t bin_and_lose_counter(const bin_t &bin) {
 
 box_t next_permutation_of_weight(bin_t bin, int iterations) {
     result_bin_t result;
+    int best_itr = 0;
         for(int i = 0; i < iterations; i++) {
             std::next_permutation(bin.weight.begin(), bin.weight.end());
             result_bin_t output = bin_and_lose_counter(bin);
             if (output.lose < result.lose || result.lose == 0 && output.min_bins < result.min_bins ||
                 result.min_bins == 0) {
+                best_itr = i;
                 result = output;
+
             }
-            std::cout << std::endl << i << " ";
+            std::cout << std::endl << i+1 << " ";
             std::cout << output.lose << " ";
             std::cout << output.min_bins << std::endl;
         }
@@ -90,7 +93,7 @@ box_t next_permutation_of_weight(bin_t bin, int iterations) {
         }
         std::cout << best;
     }
-    std::cout << std::endl << "i:" << iterations << " ";
+    std::cout << std::endl << "i:" << best_itr << " ";
     std::cout << "l:" << result.lose << " ";
     std::cout << "b:" << result.min_bins << "\n\n";
 
@@ -99,6 +102,7 @@ box_t next_permutation_of_weight(bin_t bin, int iterations) {
 
 box_t random_sampling(bin_t bin, int iterations) {
     result_bin_t result;
+    int best_itr;
     std::random_device rd;
     std::mt19937 g(rd());
     for(int i = 0; i < iterations; i++) {
@@ -106,9 +110,10 @@ box_t random_sampling(bin_t bin, int iterations) {
             result_bin_t output = bin_and_lose_counter(bin);
             if (output.lose < result.lose || result.lose == 0 && output.min_bins < result.min_bins ||
                 result.min_bins == 0) {
+                best_itr = i;
                 result = output;
             }
-        std::cout << std::endl << i << " ";
+        std::cout << std::endl << i+1 << " ";
         std::cout << output.lose << " ";
         std::cout << output.min_bins << std::endl;
     }
@@ -126,12 +131,14 @@ box_t random_sampling(bin_t bin, int iterations) {
         std::cout << best;
 
     }
-    std::cout << std::endl << "i:" << iterations << " ";
+    std::cout << std::endl << "i:" << best_itr << " ";
     std::cout << "l:" << result.lose << " ";
     std::cout << "b:" << result.min_bins << "\n\n";
 
     return result.bin.weight;
 }
+
+
 
 bin_t generate_random_solution(int iterations){
     result_bin_t result;
@@ -157,12 +164,12 @@ bin_t generate_random_solution(int iterations){
 
 int main() {
         bin_t example = {
-            10,
-            {5,2,9,7,6,2,10,5,4},
+            20,
+            {11,8,9,14,3,19,6,1,15,3,12,10},
     };
 
-    next_permutation_of_weight(example, 5);
-    random_sampling(example,10);
+    next_permutation_of_weight(example, 100);
+    random_sampling(example,100);
 
 
 }
