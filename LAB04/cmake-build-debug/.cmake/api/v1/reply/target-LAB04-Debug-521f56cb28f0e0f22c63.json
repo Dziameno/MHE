@@ -2,7 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "LAB04"
+			"path" : "LAB04.exe"
+		},
+		{
+			"path" : "LAB04.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -35,7 +38,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk"
+					"fragment" : "-g"
 				},
 				{
 					"fragment" : "-std=gnu++20"
@@ -68,12 +71,16 @@
 			{
 				"fragment" : "",
 				"role" : "flags"
+			},
+			{
+				"fragment" : "-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
+				"role" : "libraries"
 			}
 		],
 		"language" : "CXX"
 	},
 	"name" : "LAB04",
-	"nameOnDisk" : "LAB04",
+	"nameOnDisk" : "LAB04.exe",
 	"paths" : 
 	{
 		"build" : ".",
