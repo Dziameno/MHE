@@ -80,20 +80,20 @@ void print_best(bin_t bin, result_bin_t result, int best_itr){
     std::cout << "b:" << result.min_bins << "\n\n";
 }
 
-box_t next_permutation_of_weight(bin_t bin, int iterations) {
+box_t bruteforce(bin_t bin, int iterations) {
     result_bin_t result;
     int best_itr = 0;
-        for(int i = 0; i < iterations; i++) {
-            std::next_permutation(bin.weight.begin(), bin.weight.end());
-            result_bin_t output = bin_and_lose_counter(bin);
-            if (output.lose < result.lose || result.lose == 0 && output.min_bins < result.min_bins ||
-                result.min_bins == 0) {
-                best_itr = i;
-                result = output;
+    for(int i = 0; i < iterations; i++) {
+        std::next_permutation(bin.weight.begin(), bin.weight.end());
+        result_bin_t output = bin_and_lose_counter(bin);
+        if (output.lose < result.lose || result.lose == 0 && output.min_bins < result.min_bins ||
+            result.min_bins == 0) {
+            best_itr = i;
+            result = output;
 
-            }
-//            print_best(output.bin, output, i);
         }
+//            print_best(output.bin, output, i);
+    }
 
 
     std::cout << "\n\nBruteforce best" << std::endl;
@@ -108,12 +108,12 @@ box_t random_sampling(bin_t bin, int iterations) {
     std::mt19937 g(rd());
     for(int i = 0; i < iterations; i++) {
         std::shuffle(bin.weight.begin(), bin.weight.end(),g);
-            result_bin_t output = bin_and_lose_counter(bin);
-            if (output.lose < result.lose || result.lose == 0 && output.min_bins < result.min_bins ||
-                result.min_bins == 0) {
-                best_itr = i;
-                result = output;
-            }
+        result_bin_t output = bin_and_lose_counter(bin);
+        if (output.lose < result.lose || result.lose == 0 && output.min_bins < result.min_bins ||
+            result.min_bins == 0) {
+            best_itr = i;
+            result = output;
+        }
 //        print_best(output.bin, output, i);
     }
 
@@ -156,7 +156,29 @@ bin_t randomize_solution(bin_t bin) {
     return bin;
 }
 
-bin_t hill_climb(bin_t bin, int iterations){
+bin_t hill_climb_det(bin_t bin, int iterations) {
+    result_bin_t result;
+    int best_itr;
+    for(int i = 0; i < iterations; i++) {
+        bin_t output = randomize_solution(bin);
+        result_bin_t output_result = bin_and_lose_counter(output);
+        if (output_result.lose < result.lose || result.lose == 0 && output_result.min_bins < result.min_bins ||
+            result.min_bins == 0) {
+            best_itr = i;
+            result = output_result;
+            bin = output;
+        }
+//        print_best(output, output_result, i);
+    }
+
+    std::cout << "\n\nHill climbing det best" << std::endl;
+    print_best(bin, result, best_itr);
+    return bin;
+
+}
+
+
+bin_t hill_climb_random(bin_t bin, int iterations){
     result_bin_t result;
     int best_itr = 0;
     bin_t best_solution = generate_random_solution(bin);
@@ -164,9 +186,7 @@ bin_t hill_climb(bin_t bin, int iterations){
     std::cout << std::endl;
     for(int i = 0; i < iterations; i++) {
         std::vector<bin_t> neighbors;
-        for (int j = 0; j < best_solution.weight.size(); ++j) {
-            neighbors.push_back(randomize_solution(best_solution));
-        }
+        neighbors.push_back(randomize_solution(best_solution));
         neighbors.push_back(best_solution);
         for (auto neighbor: neighbors) {
             result_bin_t output = bin_and_lose_counter(neighbor);
@@ -180,7 +200,7 @@ bin_t hill_climb(bin_t bin, int iterations){
 //        print_best(bin, best_result, i);
     }
 
-    std::cout << "\n\nHill climb best" << std::endl;
+    std::cout << "\n\nHill climb random best" << std::endl;
     print_best(bin, best_result, best_itr);
     return best_solution;
 
@@ -192,13 +212,16 @@ bin_t hill_climb(bin_t bin, int iterations){
 
 int main() {
     bin_t example = {
-            30,
-            {5,2,7,12,19,3,4,1,6,8,9,10,11,13,14,15,16,17,18,20}
+            9,
+            {6,6,5,5,5,4,4,4,4,2,2,2,2,
+             3,3,7,7,5,5,8,8,4,4,5}
+
     };
 
-    next_permutation_of_weight(example, 300);
-    random_sampling(example,300);
-    hill_climb(example, 300);
+    bruteforce(example, 6300000000000000000);
+//    random_sampling(example,2000000);
+//    hill_climb_det(example, 2000000);
+//    hill_climb_random(example, 2000000);
 
 
 }

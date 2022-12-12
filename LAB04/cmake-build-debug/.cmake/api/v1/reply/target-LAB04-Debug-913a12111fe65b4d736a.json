@@ -2,10 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "LAB04.exe"
-		},
-		{
-			"path" : "LAB04.pdb"
+			"path" : "LAB04"
 		}
 	],
 	"backtrace" : 1,
@@ -38,10 +35,10 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g"
+					"fragment" : "-g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk -fcolor-diagnostics"
 				},
 				{
-					"fragment" : "-std=gnu++20"
+					"fragment" : "-std=gnu++17"
 				}
 			],
 			"language" : "CXX",
@@ -51,7 +48,7 @@
 				[
 					1
 				],
-				"standard" : "20"
+				"standard" : "17"
 			},
 			"sourceIndexes" : 
 			[
@@ -71,16 +68,12 @@
 			{
 				"fragment" : "",
 				"role" : "flags"
-			},
-			{
-				"fragment" : "-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
-				"role" : "libraries"
 			}
 		],
 		"language" : "CXX"
 	},
 	"name" : "LAB04",
-	"nameOnDisk" : "LAB04.exe",
+	"nameOnDisk" : "LAB04",
 	"paths" : 
 	{
 		"build" : ".",
