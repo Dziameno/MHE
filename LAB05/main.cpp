@@ -2,6 +2,7 @@
 #include <vector>
 #include <numeric>
 #include <random>
+#include <list>
 
 using box_t = std::vector<int>;
 
@@ -209,36 +210,42 @@ bin_t hill_climb_random(bin_t bin, int iterations){
 bin_t tabu_search(bin_t bin, int iterations){
     result_bin_t result;
     int best_itr = 0;
-    bin_t best_solution = generate_random_solution(bin);
-    result_bin_t best_result = bin_and_lose_counter(best_solution);
+    bin_t random_solution = generate_random_solution(bin);
+    result_bin_t best_result = bin_and_lose_counter(random_solution);
 
-    std::vector<bin_t> tabu_list;
-    tabu_list.push_back(best_solution);
-    std::cout << std::endl;
+    std::list<box_t> tabu_list;
+    tabu_list.push_back(random_solution.weight);
+
     for(int i = 0; i < iterations; i++) {
         std::vector<bin_t> neighbors;
-        neighbors.push_back(randomize_solution(best_solution));
-        neighbors.push_back(best_solution);
+        neighbors.push_back(randomize_solution(random_solution));
+        neighbors.push_back(random_solution);
         for (auto neighbor: neighbors) {
             result_bin_t output = bin_and_lose_counter(neighbor);
             if (output.lose < best_result.lose || best_result.lose == 0 && output.min_bins < best_result.min_bins ||
                 best_result.min_bins == 0) {
                 best_itr = i;
                 best_result = output;
-                best_solution = neighbor;
+                random_solution = neighbor;
             }
         }
 
-        tabu_list.push_back(best_solution);
+        tabu_list.push_back(random_solution.weight);
         if (tabu_list.size() > 10) {
-            tabu_list.erase(tabu_list.begin());
+            tabu_list.pop_front();
+        }
+
+        for (auto tabu: tabu_list) {
+            if (tabu == random_solution.weight) {
+                random_solution = generate_random_solution(bin);
+            }
         }
 
     }
 
     std::cout << "\n\nTabu search best" << std::endl;
     print_best(bin, best_result, best_itr);
-    return best_solution;
+    return random_solution;
 
 }
 
@@ -250,7 +257,7 @@ int main() {
 
     };
 
-    int i = 10000;
+    int i = 5643;
     bruteforce(example, i);
     random_sampling(example,i);
     hill_climb_det(example, i);
