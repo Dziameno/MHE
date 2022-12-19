@@ -1,3 +1,0 @@
-/Users/zuo/Documents/CODE/MHE/LAB04/cmake-build-debug/CMakeFiles/LAB04.dir
-/Users/zuo/Documents/CODE/MHE/LAB04/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/zuo/Documents/CODE/MHE/LAB04/cmake-build-debug/CMakeFiles/rebuild_cache.dir
