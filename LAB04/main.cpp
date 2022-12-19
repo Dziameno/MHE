@@ -80,14 +80,15 @@ void print_best(bin_t bin, result_bin_t result, int best_itr){
     std::cout << "b:" << result.min_bins << "\n\n";
 }
 
+
 box_t bruteforce(bin_t bin, int iterations) {
     result_bin_t result;
     int best_itr = 0;
     for(int i = 0; i < iterations; i++) {
         std::next_permutation(bin.weight.begin(), bin.weight.end());
         result_bin_t output = bin_and_lose_counter(bin);
-        if (output.lose < result.lose || result.lose == 0 && output.min_bins < result.min_bins ||
-            result.min_bins == 0) {
+        if ((output.lose < result.lose || result.lose == 0) && (output.min_bins < result.min_bins) ||
+                (result.min_bins == 0)) {
             best_itr = i;
             result = output;
 
@@ -156,7 +157,7 @@ bin_t randomize_solution(bin_t bin) {
     return bin;
 }
 
-bin_t hill_climb_det(bin_t bin, int iterations) {
+bin_t hill_climb(bin_t bin, int iterations) {
     result_bin_t result;
     int best_itr;
     for(int i = 0; i < iterations; i++) {
@@ -171,7 +172,7 @@ bin_t hill_climb_det(bin_t bin, int iterations) {
 //        print_best(output, output_result, i);
     }
 
-    std::cout << "\n\nHill climbing det best" << std::endl;
+    std::cout << "\n\nHill climbing best" << std::endl;
     print_best(bin, result, best_itr);
     return bin;
 
@@ -217,11 +218,12 @@ int main() {
              3,3,7,7,5,5,8,8,4,4,5}
 
     };
+    int i = 10000;
+    bruteforce(example, i);
+    random_sampling(example,i);
+    hill_climb(example, i);
+    hill_climb_random(example, i);
 
-    bruteforce(example, 6300000000000000000);
-//    random_sampling(example,2000000);
-//    hill_climb_det(example, 2000000);
-//    hill_climb_random(example, 2000000);
 
 
 }
